@@ -29,10 +29,6 @@ macro_rules! impl_position_getters_as_resizable {
           TilingDirection::Horizontal => horizontal_gap,
         };
 
-        // Cache sibling count to avoid multiple iterations.
-        #[allow(clippy::cast_possible_wrap)]
-        let sibling_count = self.tiling_siblings().count() as i32;
-
         #[allow(
           clippy::cast_precision_loss,
           clippy::cast_possible_truncation,
@@ -41,7 +37,7 @@ macro_rules! impl_position_getters_as_resizable {
         let (width, height) = match parent.tiling_direction() {
           TilingDirection::Vertical => {
             let available_height = parent_rect.height()
-              - inner_gap * sibling_count;
+               - inner_gap * self.tiling_siblings().count() as i32;
 
             let height =
               (self.tiling_size() * available_height as f32) as i32;
@@ -50,7 +46,7 @@ macro_rules! impl_position_getters_as_resizable {
           }
           TilingDirection::Horizontal => {
             let available_width = parent_rect.width()
-              - inner_gap * sibling_count;
+               - inner_gap * self.tiling_siblings().count() as i32;
 
             let width =
               (available_width as f32 * self.tiling_size()).round() as i32;
